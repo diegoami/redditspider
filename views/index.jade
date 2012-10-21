@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  h1
+    | THE REDDIT SPIDER
+  p
+    | Welcome to the Reddit Spider. It allows to search for comments containing a specified string in subreddits.
+  form(action="/search", method="POST")
+    table
+      tr
+        td
+          | username
+        td
+          input(name="username")
+      tr
+        td
+          | password
+        td
+          input(name="password", type="password")
+      tr
+        td
+          | url
+        td
+          input(name="url")
+      tr
+        td
+          | searchString
+        td
+          input(name="searchString", pattern=".{4,}", title="4 characters minimum")
+      tr
+        td
+          button(type="submit")
+            | Submit

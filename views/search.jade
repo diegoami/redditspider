@@ -7,20 +7,15 @@ block content
       li
         a(href="#{link.href}")
           | #{link.text}
-
-  form(action="/search")
-    table
-      tr
-        td
-          | url
-        td
-          input(name="url")
-      tr
-        td
-          | searchString
-        td
-          input(name="searchString")
-      tr
-        td
-          input(type="submit")
+          ul
+            li
+              a(href="#{link.commentLink}")
+                | Comment
+            li
+              ul
+                each comment in link.commentArray
+                  li
+                    a(href="#{comment.href}")
+                      | #{comment.text}
+        form(action="/search")
 
