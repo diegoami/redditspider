@@ -1,7 +1,7 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var url = require('url');
-
+var util = require('util');
 
 exports.linksWaiting = 0;
 exports.login = function(users, password, callback) {
@@ -20,6 +20,13 @@ exports.search = function(req, res){
     var password = req.param('password');
     var linkArray = [];
     var searchString = req.param('searchString');
+    req.assert('searchString', 'SearchString Too short').notEmpty().len(3);
+
+    var errors = req.validationErrors();
+    if (errors) {
+        res.send('There have been validation errors: ' + util.inspect(errors), 500);
+        return;
+    }
     exports.login(users, password, function(err, resp, body){
         request('http://www.reddit.com'+urlParam, function(err, resp, body){
             $ = cheerio.load(body);
@@ -65,10 +72,13 @@ exports.search = function(req, res){
                             }
                         });
                         var analyzedCommentLink = linkMap[this.uri.href];
-                        linkMap[this.uri.href].inProgress = false;
                         console.log("Finished processing "+this.uri.href);
-
+                        linkMap[this.uri.href].inProgress = false;
                         exports.renderIfFinished(res, linkArray);
+                        setTimeout(function() {
+                            exports.renderIfFinished(res,linkArray);
+                        }, 1000 );
+
                     });
                 }
             }
@@ -84,17 +94,16 @@ exports.renderIfFinished = function (res, linkArray) {
         var currentDate = new Date();
         if ( (currentLink.inProgress) && ( currentDate.getTime() -currentLink.requestStart.getTime() <  30000)) {
             inProgressLinks++;
-
             //console.log("STILL IN PROGRESS : "+currentLink.commentLink);
         }
     }
     if (inProgressLinks > 0) {
         console.log("Still "+inProgressLinks+ " links in progress");
-        if (inProgressLinks === 1) {
-
+        if (inProgressLinks < 3) {
             setTimeout(function() {
                 exports.renderIfFinished(res,linkArray);
-            }, 30000 );
+            }, 1000 );
+
         }
     } else {
         console.log("Processing.... ");
