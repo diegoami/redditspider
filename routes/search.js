@@ -92,7 +92,7 @@ exports.renderIfFinished = function (res, linkArray) {
     for (var linkIndex = 0; linkIndex < linkArray.length; linkIndex++) {
         var currentLink = linkArray[linkIndex];
         var currentDate = new Date();
-        if ( (currentLink.inProgress) && ( currentDate.getTime() -currentLink.requestStart.getTime() <  30000)) {
+        if ( (currentLink.inProgress) && ( currentDate.getTime() -currentLink.requestStart.getTime() <  10000)) {
             inProgressLinks++;
             //console.log("STILL IN PROGRESS : "+currentLink.commentLink);
         }
