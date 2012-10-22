@@ -16,8 +16,7 @@ exports.login = function(users, password, callback) {
  */
 exports.search = function(req, res){
     var urlParam = req.param('url');
-    var users = req.param('username');
-    var password = req.param('password');
+  
     var linkArray = [];
     var searchString = req.param('searchString');
     req.assert('searchString', 'SearchString Too short').notEmpty().len(3);
@@ -27,7 +26,7 @@ exports.search = function(req, res){
         res.send('There have been validation errors: ' + util.inspect(errors), 500);
         return;
     }
-    exports.login(users, password, function(err, resp, body){
+    //exports.login(users, password, function(err, resp, body){
         request('http://www.reddit.com'+urlParam, function(err, resp, body){
             $ = cheerio.load(body);
             var links = $('a.title, a.comments'); //use your CSS selector here
@@ -83,7 +82,7 @@ exports.search = function(req, res){
                 }
             }
         });
-    });
+//    });
 };
 
 
